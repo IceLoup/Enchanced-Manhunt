@@ -3,10 +3,8 @@ package xyz.pyxismc.manhunt;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import net.kyori.adventure.title.Title;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +17,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+import java.time.Duration;
 
 import java.util.*;
 
@@ -96,8 +95,8 @@ public class StartGameListener implements Listener {
             meta.displayName(miniMessage.deserialize("<!italic><#d60f0f>Compass Tracker"));
 
             List<Component> lore = new ArrayList<>();
-            lore.add(miniMessage.deserialize("<!italic><gray>Left-Click to <#d60f0f>update location"));
-            lore.add(miniMessage.deserialize("<!italic><gray>Right-Click to <#d60f0f>switch runner"));
+            lore.add(miniMessage.deserialize("<!italic><dark_gray>» <gray>Left-Click to <#d60f0f>update location"));
+            lore.add(miniMessage.deserialize("<!italic><dark_gray>» <gray>Right-Click to <#d60f0f>switch runner"));
             meta.lore(lore);
         });
 
@@ -108,7 +107,7 @@ public class StartGameListener implements Listener {
         }
 
         Location spawnLocation = world.getSpawnLocation();
-        Component startMessage = miniMessage.deserialize("<gradient:#e64935:#e69935>:manhunt: Manhunt Game started!");
+        Component startMessage = miniMessage.deserialize("<newline><#e61717>⚔ <dark_gray>» <#e61717>Manhunt Game started!<newline>");
         Bukkit.broadcast(startMessage);
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -117,7 +116,7 @@ public class StartGameListener implements Listener {
             // Modern health reset (setHealth to maxAttribute)
             double maxHealth = onlinePlayer.getAttribute(Attribute.MAX_HEALTH).getValue();
             onlinePlayer.setHealth(maxHealth);
-            onlinePlayer.setFoodLevel(20);
+            onlinePlayer.setFoodLevel(17);
             onlinePlayer.setSaturation(20.0f);
 
             onlinePlayer.playSound(onlinePlayer.getLocation(), "minecraft:entity.player.levelup", 1.0f, 1.0f);
@@ -129,7 +128,7 @@ public class StartGameListener implements Listener {
                 }
                 else {
                     frozenPlayers.add(onlinePlayer.getUniqueId());
-                    onlinePlayer.sendMessage(miniMessage.deserialize("<yellow>You are frozen for " + (configValue / 20) + " seconds!"));
+                    onlinePlayer.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <#e61717> " + (configValue / 20) + " seconds!"));
                 }
             }
         }
@@ -143,12 +142,34 @@ public class StartGameListener implements Listener {
         else {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 frozenPlayers.clear();
+
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+
+                    onlinePlayer.sendMessage(miniMessage.deserialize(" "));
+                    onlinePlayer.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <#e61717>The HeadStart is now over!"));
+                    onlinePlayer.sendMessage(miniMessage.deserialize(" "));
+
                     if (onlinePlayer.hasPermission("manhunt.hunter")) {
-                        onlinePlayer.sendMessage(miniMessage.deserialize("<green>The head start is over! GO!"));
-                        onlinePlayer.playSound(onlinePlayer.getLocation(), "minecraft:block.note_block.pling", 1.0f, 2.0f);
+
+                        onlinePlayer.playSound(
+                                onlinePlayer.getLocation(),
+                                Sound.BLOCK_NOTE_BLOCK_PLING,
+                                1.0f,
+                                2.0f
+                        );
+
+                        onlinePlayer.showTitle(Title.title(
+                                miniMessage.deserialize("<#e61717><bold>GO!"),
+                                Component.empty(),
+                                Title.Times.times(
+                                        Duration.ofMillis(250),   // fade in (5 ticks)
+                                        Duration.ofMillis(2000),  // stay (40 ticks)
+                                        Duration.ofMillis(1000)   // fade out (20 ticks)
+                                )
+                        ));
                     }
                 }
+
             }, configValue);
         }
     }
@@ -168,7 +189,7 @@ public class StartGameListener implements Listener {
             String timeString = formatTime(elapsedMillis);
 
             // Send action bar to all players
-            Component timerDisplay = miniMessage.deserialize("<gradient:#e64935:#e69935>⏱ <white>" + timeString);
+            Component timerDisplay = miniMessage.deserialize("<gray>" + timeString);
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendActionBar(timerDisplay);
             }
@@ -208,6 +229,11 @@ public class StartGameListener implements Listener {
             // Block X, Y, Z movement but allow looking around
             if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
                 event.setTo(from.setDirection(to.getDirection()));
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    if (onlinePlayer.hasPermission("manhunt.hunter")) {
+                        onlinePlayer.sendActionBar(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <#e61717>You can't move during the head start!"));
+                    }
+                }
             }
         }
     }

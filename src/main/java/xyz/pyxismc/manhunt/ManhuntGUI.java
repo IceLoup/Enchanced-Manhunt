@@ -182,7 +182,7 @@ public class ManhuntGUI implements Listener, CommandExecutor {
                 miniMessage.deserialize("<dark_gray>» <gray>Click to change")));
 
         // WorldBorder
-        inv.setItem(15, createItem(Material.GRASS_BLOCK,
+        inv.setItem(14, createItem(Material.GRASS_BLOCK,
                 miniMessage.deserialize("<#00ff00>OverWorld Border"),
                 miniMessage.deserialize("<white>Size of the overworld border"),
                 miniMessage.deserialize("<gray>current<dark_gray> » <#00ff00>" + overWorldBorderListener.getWorldBorderSize() + " blocks"),

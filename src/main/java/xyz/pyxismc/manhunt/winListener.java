@@ -45,7 +45,7 @@ public class winListener implements Listener {
                 // Send victory title to runners
                 Title title = Title.title(
                         miniMessage.deserialize("<gradient:#0fb800:#39db6c><bold>VICTORY!"),
-                        miniMessage.deserialize("<gray>" + killer.getName() + " <white>slayed the Ender Dragon!"),
+                        miniMessage.deserialize(""),
                         Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(4), Duration.ofMillis(500))
                 );
                 player.showTitle(title);
@@ -54,14 +54,15 @@ public class winListener implements Listener {
                 player.playSound(player.getLocation(), "minecraft:ui.toast.challenge_complete", 1.0f, 1.0f);
 
                 // Send message with seed
-                player.sendMessage(miniMessage.deserialize(":manhunt: <gradient:#0fb800:#39db6c><bold>RUNNERS WIN! <white>" + killer.getName() + " has defeated the Ender Dragon!"));
-                player.sendMessage(miniMessage.deserialize("<gray>World Seed: <#ffd700>" + seed));
+                player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <gray>The runners team has won the Game <#e61717>" + killer.getName() + " <gray>has defeated the Ender Dragon!"));
+                player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>»<gray> World seed <dark_gray>»<#e61717>" + seed));
+                player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>»<gray> Game Duration <dark_gray>»<#e61717>" + elapsedTime));
             }
             else if (player.hasPermission("manhunt.hunter")) {
                 // Send defeat title to hunters
                 Title title = Title.title(
-                        miniMessage.deserialize("<gradient:#e64935:#e69935><bold>DEFEAT!"),
-                        miniMessage.deserialize("<gray>" + killer.getName() + " <white>slayed the Ender Dragon!"),
+                        miniMessage.deserialize("<#e61717><bold>DEFEAT!"),
+                        miniMessage.deserialize(""),
                         Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(4), Duration.ofMillis(500))
                 );
                 player.showTitle(title);
@@ -70,9 +71,9 @@ public class winListener implements Listener {
                 player.playSound(player.getLocation(), "minecraft:entity.wither.death", 0.5f, 0.8f);
 
                 // Send message with seed
-                player.sendMessage(miniMessage.deserialize(":manhunt: <gradient:#e64935:#e69935><bold>HUNTERS LOSE! <white>" + killer.getName() + " has defeated the Ender Dragon!"));
-                player.sendMessage(miniMessage.deserialize("<gray>World Seed: <#ffd700>" + seed));
-                player.sendMessage(miniMessage.deserialize("<gray>Game Duration: <#ffd700>" + elapsedTime));
+                player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <gray>The runners team has won the Game <#e61717>" + killer.getName() + " <gray>has defeated the Ender Dragon!"));
+                player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>»<gray> World seed <dark_gray>»<#e61717>" + seed));
+                player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>»<gray> Game Duration <dark_gray>»<#e61717>" + elapsedTime));
             }
         }
     }
