@@ -91,7 +91,7 @@ public class StartGameListener implements Listener {
 
         ItemStack compass = new ItemStack(Material.COMPASS);
         compass.editMeta(meta -> {
-            // Set the Display Name (Title)
+
             meta.displayName(miniMessage.deserialize("<!italic><#d60f0f>Compass Tracker"));
 
             List<Component> lore = new ArrayList<>();
@@ -116,8 +116,8 @@ public class StartGameListener implements Listener {
             // Modern health reset (setHealth to maxAttribute)
             double maxHealth = onlinePlayer.getAttribute(Attribute.MAX_HEALTH).getValue();
             onlinePlayer.setHealth(maxHealth);
-            onlinePlayer.setFoodLevel(17);
-            onlinePlayer.setSaturation(20.0f);
+            onlinePlayer.setFoodLevel(20);
+            onlinePlayer.setSaturation(14.0f);
 
             onlinePlayer.playSound(onlinePlayer.getLocation(), "minecraft:entity.player.levelup", 1.0f, 1.0f);
 
@@ -125,21 +125,16 @@ public class StartGameListener implements Listener {
             if (onlinePlayer.hasPermission("manhunt.hunter")) {
                 if (configValue == 0) {
                     return;
-                }
-                else {
+                } else {
                     frozenPlayers.add(onlinePlayer.getUniqueId());
-                    onlinePlayer.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <#e61717> " + (configValue / 20) + " seconds!"));
+                    onlinePlayer.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <#e61717>You're freeze for " + (configValue / 20) + " seconds!"));
                 }
             }
         }
 
         // Start the game timer
         startTimer();
-
-        if (configValue == 0) {
-            return;
-        }
-        else {
+        if (configValue >= 0) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 frozenPlayers.clear();
 
@@ -169,7 +164,6 @@ public class StartGameListener implements Listener {
                         ));
                     }
                 }
-
             }, configValue);
         }
     }

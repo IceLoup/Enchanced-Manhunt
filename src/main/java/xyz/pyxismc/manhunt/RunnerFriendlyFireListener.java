@@ -43,9 +43,9 @@ public class RunnerFriendlyFireListener implements Listener {
 
                         // Send feedback message
                         if (runnerfriendlyFireEnabled) {
-                            player.sendMessage(miniMessage.deserialize(":manhunt: <gradient:#e64935:#e69935>Runners Friendly Fire: <#0fd612>ON"));
+                            player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <#e61717>Friendly fire beetween runners is now <#05ff26>ON"));
                         } else {
-                            player.sendMessage(miniMessage.deserialize(":manhunt: <gradient:#e64935:#e69935>Runner Friendly Fire:<#d60f0f> OFF"));
+                            player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <#e61717>Friendly fire beetween runners is now <#e61717>OFF"));
                         }
 
                         player.playSound(player.getLocation(), "minecraft:block.note_block.pling", 1.0f, 1.0f);

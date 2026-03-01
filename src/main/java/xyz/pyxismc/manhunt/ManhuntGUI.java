@@ -59,7 +59,7 @@ public class ManhuntGUI implements Listener, CommandExecutor {
         // Main Menu setup
         mainMenu = Bukkit.createInventory(null, 27, miniMessage.deserialize("<gradient:#e64935:#e69935>★ Manhunt Menu"));
 
-        mainMenu.setItem(11, createItem(Material.PLAYER_HEAD,
+        mainMenu.setItem(11, createItem(Material.DIAMOND_BOOTS,
                 miniMessage.deserialize("<gradient:#0fb800:#39db6c>Runner Selection"),
                 miniMessage.deserialize(" "),
                 miniMessage.deserialize("<gray>Assign players as runners or hunters")));
@@ -79,52 +79,6 @@ public class ManhuntGUI implements Listener, CommandExecutor {
         // Config Menu setup
         confMenu = Bukkit.createInventory(null, 36, miniMessage.deserialize("<gradient:#e64935:#e69935>▶ Manhunt configuration"));
         updateConfigMenuItems(confMenu);
-    }
-
-    private void updateSelectionMenu() {
-        List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
-
-        selectionMenu = Bukkit.createInventory(null, 54, miniMessage.deserialize("<bold><gradient:#0fb800:#39db6c>Select Runner"));
-
-        int slot = 0;
-        for (Player target : onlinePlayers) {
-            if (slot >= 54) break;
-            ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-            skullMeta.setOwningPlayer(target);
-
-            List<Component> lore = new ArrayList<>();
-
-            // Determine current role and set display accordingly
-            if (target.hasPermission("manhunt.runner")) {
-                // Current: Runner
-                skullMeta.displayName(miniMessage.deserialize("<gradient:#0fb800:#39db6c>⚡ " + target.getName()));
-                lore.add(miniMessage.deserialize(""));
-                lore.add(miniMessage.deserialize("<gray>Current Role: <gradient:#0fb800:#39db6c><bold>RUNNER"));
-                lore.add(miniMessage.deserialize(""));
-                lore.add(miniMessage.deserialize("<dark_gray>▸ <gray>Click to change to <gradient:#e64935:#e69935>Hunter"));
-
-            } else if (target.hasPermission("manhunt.hunter")) {
-                // Current: Hunter
-                skullMeta.displayName(miniMessage.deserialize("<gradient:#e64935:#e69935>⚔ " + target.getName()));
-                lore.add(miniMessage.deserialize(""));
-                lore.add(miniMessage.deserialize("<gray>Current Role: <gradient:#e64935:#e69935><bold>HUNTER"));
-                lore.add(miniMessage.deserialize(""));
-                lore.add(miniMessage.deserialize("<dark_gray>▸ <gray>Click to change to <gradient:#0fb800:#39db6c>Runner"));
-
-            } else {
-                // No role assigned
-                skullMeta.displayName(miniMessage.deserialize("<white>" + target.getName()));
-                lore.add(miniMessage.deserialize(""));
-                lore.add(miniMessage.deserialize("<gray>Current Role: <dark_gray>None"));
-                lore.add(miniMessage.deserialize(""));
-                lore.add(miniMessage.deserialize("<dark_gray>▸ <gray>Click to make <gradient:#0fb800:#39db6c>Runner"));
-            }
-
-            skullMeta.lore(lore.stream().map(c -> c.decoration(TextDecoration.ITALIC, false)).toList());
-            skull.setItemMeta(skullMeta);
-            selectionMenu.setItem(slot++, skull);
-        }
     }
 
     @Override
@@ -207,21 +161,10 @@ public class ManhuntGUI implements Listener, CommandExecutor {
             ItemStack clicked = event.getCurrentItem();
             if (clicked == null) return;
 
-            if (clicked.getType() == Material.PLAYER_HEAD) {
-                updateSelectionMenu();
-                player.openInventory(selectionMenu);
-            } else if (clicked.getType() == Material.COMPARATOR) {
+            else if (clicked.getType() == Material.COMPARATOR) {
                 updateConfigMenuItems(confMenu);
                 player.openInventory(confMenu);
             }
-        }
-
-        else if (title.contains("Select Runner")) {
-            event.setCancelled(true);
-            ItemStack clicked = event.getCurrentItem();
-            if (clicked == null || clicked.getType() != Material.PLAYER_HEAD) return;
-
-            SkullMeta meta = (SkullMeta) clicked.getItemMeta();
         }
 
         else if (title.contains("Manhunt configuration")) {

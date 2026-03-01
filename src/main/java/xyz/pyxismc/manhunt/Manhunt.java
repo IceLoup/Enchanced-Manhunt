@@ -42,11 +42,11 @@ public class Manhunt extends JavaPlugin {
         getServer().getPluginManager().registerEvents(compassListener, this);
         getServer().getPluginManager().registerEvents(manhuntGUI, this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
-        getServer().getPluginManager().registerEvents(new RunnerSelectionListener(this ), this);
         getServer().getPluginManager().registerEvents(overWorldBorderListener, this);
-        getServer().getPluginManager().registerEvents(new winListener(), this);
+        getServer().getPluginManager().registerEvents(new WinListener(), this);
         getServer().getPluginManager().registerEvents(new DeathListener(this), this);
-        getServer().getPluginManager().registerEvents(new RespawnListener(), this);
+        getServer().getPluginManager().registerEvents(new RespawnListener(this), this);
+        getServer().getPluginManager().registerEvents(new SelectionGUI(this), this);
 
         // Register commands
         if (getCommand("runner") != null) {

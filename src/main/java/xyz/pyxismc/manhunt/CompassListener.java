@@ -61,22 +61,22 @@ public class CompassListener implements Listener {
         if (!hunter.hasPermission("manhunt.hunter")) return;
 
         if (!compassEnableListener.isCompassEnabled()) {
-            hunter.sendMessage(miniMessage.deserialize("<red>Compass tracking is disabled!"));
+            hunter.sendMessage(miniMessage.deserialize("<#e61717>Compass tracking is disabled!"));
             return;
         }
 
         List<Player> runners = getAllRunners();
         if (runners.isEmpty()) {
-            hunter.sendMessage(miniMessage.deserialize("<red>No runners found online!"));
+            hunter.sendMessage(miniMessage.deserialize("<#e61717>No runners found online!"));
             return;
         }
 
         Action action = event.getAction();
 
-        if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
+        if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
             // Logic: Switch to the next runner
             switchTarget(hunter, runners);
-        } else if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
+        } else if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
             // Logic: Just update the position of the current target
             updateCompass(hunter);
         }
@@ -103,7 +103,7 @@ public class CompassListener implements Listener {
         }
 
         hunterTargets.put(hunter.getUniqueId(), nextRunner.getUniqueId());
-        hunter.sendMessage(miniMessage.deserialize("<green>Now tracking: <yellow>" + nextRunner.getName()));
+        hunter.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <gray>Now tracking<#e61717> " + nextRunner.getName()));
         updateCompass(hunter);
     }
 
@@ -120,7 +120,7 @@ public class CompassListener implements Listener {
 
         Player runner = Bukkit.getPlayer(targetId);
         if (runner == null || !runner.isOnline()) {
-            hunter.sendMessage(miniMessage.deserialize("<red>Target is offline! Right-click to switch."));
+            hunter.sendMessage(miniMessage.deserialize("<#e61717>Target is offline! Right-click to switch."));
             return;
         }
 
@@ -129,17 +129,17 @@ public class CompassListener implements Listener {
 
         if (hunterWorld.equals(runnerLoc.getWorld())) {
             hunter.setCompassTarget(runnerLoc);
-            hunter.sendMessage(miniMessage.deserialize("<gray>Compass updated for <white>" + runner.getName()));
+            hunter.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <gray>Updated position of <#e61717>" + runner.getName()));
         } else {
             // Cross-dimensional tracking
             Location lastLoc = lastKnownLocations.getOrDefault(targetId, new HashMap<>()).get(hunterWorld.getName());
 
             if (lastLoc != null) {
                 hunter.setCompassTarget(lastLoc);
-                hunter.sendMessage(miniMessage.deserialize("<yellow>" + runner.getName() + " is in " + runnerLoc.getWorld().getName() + "! Tracking last portal..."));
+                hunter.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <#e61717>" + runner.getName() + " <gray>is in another world. Trakcing portal location."));
             } else {
                 hunter.setCompassTarget(hunterWorld.getSpawnLocation());
-                hunter.sendMessage(miniMessage.deserialize("<red>Target in another world. No last known location found."));
+                hunter.sendMessage(miniMessage.deserialize("<#e61717>Target in another world. No last known location found."));
             }
         }
     }

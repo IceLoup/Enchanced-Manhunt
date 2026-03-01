@@ -12,7 +12,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.time.Duration;
 
-public class winListener implements Listener {
+public class WinListener implements Listener {
 
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
@@ -54,9 +54,11 @@ public class winListener implements Listener {
                 player.playSound(player.getLocation(), "minecraft:ui.toast.challenge_complete", 1.0f, 1.0f);
 
                 // Send message with seed
+                player.sendMessage(miniMessage.deserialize(" "));
                 player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <gray>The runners team has won the Game <#e61717>" + killer.getName() + " <gray>has defeated the Ender Dragon!"));
                 player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>»<gray> World seed <dark_gray>»<#e61717>" + seed));
                 player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>»<gray> Game Duration <dark_gray>»<#e61717>" + elapsedTime));
+                player.sendMessage(miniMessage.deserialize(" "));
             }
             else if (player.hasPermission("manhunt.hunter")) {
                 // Send defeat title to hunters
@@ -71,9 +73,11 @@ public class winListener implements Listener {
                 player.playSound(player.getLocation(), "minecraft:entity.wither.death", 0.5f, 0.8f);
 
                 // Send message with seed
+                player.sendMessage(miniMessage.deserialize(" "));
                 player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <gray>The runners team has won the Game <#e61717>" + killer.getName() + " <gray>has defeated the Ender Dragon!"));
                 player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>»<gray> World seed <dark_gray>»<#e61717>" + seed));
                 player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>»<gray> Game Duration <dark_gray>»<#e61717>" + elapsedTime));
+                player.sendMessage(miniMessage.deserialize(" "));
             }
         }
     }
