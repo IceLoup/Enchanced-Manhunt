@@ -24,7 +24,6 @@ public class FriendlyFireListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
-        // Reliable title check using PlainText
         String title = PlainTextComponentSerializer.plainText().serialize(event.getView().title());
 
         if (title.contains("Manhunt configuration")) {
@@ -33,15 +32,12 @@ public class FriendlyFireListener implements Listener {
             if (clicked == null || clicked.getType() == Material.AIR) return;
 
             if (clicked.getType() == Material.FIRE_CHARGE) {
-                // Check if the item has the correct display name
                 if (clicked.hasItemMeta() && clicked.getItemMeta().hasDisplayName()) {
                     String displayName = PlainTextComponentSerializer.plainText().serialize(clicked.getItemMeta().displayName());
 
                     if (displayName.equals("Hunters Friendly Fire")) {
-                        // Toggle state
                         friendlyFireEnabled = !friendlyFireEnabled;
 
-                        // Send feedback message
                         if (friendlyFireEnabled) {
                             player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <#e61717>Friendly fire beetween hunters is now <#05ff26>ON"));
                         } else {
@@ -50,7 +46,6 @@ public class FriendlyFireListener implements Listener {
 
                         player.playSound(player.getLocation(), "minecraft:block.note_block.pling", 1.0f, 1.0f);
 
-                        // Refresh the GUI immediately to show the new ON/OFF status
                         manhuntGUI.refreshConfigMenu(event.getInventory());
                     }
                 }

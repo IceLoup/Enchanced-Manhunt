@@ -13,28 +13,20 @@ public class Manhunt extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Initialize manhuntCommand first
         manhuntCommand = new ManhuntCommand(this);
 
-        // Initialize GUI early (without listeners yet)
         manhuntGUI = new ManhuntGUI(this, manhuntCommand);
 
-        // Now initialize listeners WITH manhuntGUI reference
         startGameListener = new StartGameListener(this, manhuntGUI);
         FriendlyFireListener friendlyFireListener = new FriendlyFireListener(manhuntGUI);
         CompassEnableListener compassEnableListener = new CompassEnableListener(manhuntGUI);
         runnerFriendlyFireListener = new RunnerFriendlyFireListener(manhuntGUI);
         overWorldBorderListener = new OverWorldBorderListener(manhuntGUI);
 
-
-        // Set the listeners in manhuntGUI
-        // In Manhunt.java, update this line:
         manhuntGUI.setListeners(startGameListener, friendlyFireListener, compassEnableListener, runnerFriendlyFireListener, overWorldBorderListener);
 
-        // Initialize compass listener
         compassListener = new CompassListener(this, compassEnableListener);
 
-        // Register event listeners
         getServer().getPluginManager().registerEvents(startGameListener, this);
         getServer().getPluginManager().registerEvents(friendlyFireListener, this);
         getServer().getPluginManager().registerEvents(compassEnableListener, this);
@@ -48,7 +40,6 @@ public class Manhunt extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RespawnListener(this), this);
         getServer().getPluginManager().registerEvents(new SelectionGUI(this), this);
 
-        // Register commands
         if (getCommand("runner") != null) {
             getCommand("runner").setExecutor(manhuntCommand);
         } else {
@@ -61,7 +52,6 @@ public class Manhunt extends JavaPlugin {
             getLogger().warning("Command 'manhunt' not found in plugin.yml!");
         }
 
-        // Success message
         getLogger().info("========================================");
         getLogger().info("  Manhunt Plugin Enabled!");
         getLogger().info("  Version: " + getDescription().getVersion());
@@ -71,7 +61,6 @@ public class Manhunt extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Clean up permissions
         if (manhuntCommand != null) {
             manhuntCommand.cleanup();
         }
@@ -82,42 +71,22 @@ public class Manhunt extends JavaPlugin {
         getLogger().info("========================================");
     }
 
-    /**
-     * Get the manhunt command handler
-     * @return ManhuntCommand instance
-     */
     public ManhuntCommand getManhuntCommand() {
         return manhuntCommand;
     }
 
-    /**
-     * Get the GUI handler
-     * @return ManhuntGUI instance
-     */
     public ManhuntGUI getManhuntGUI() {
         return manhuntGUI;
     }
 
-    /**
-     * Get the compass listener
-     * @return CompassListener instance
-     */
     public CompassListener getCompassListener() {
         return compassListener;
     }
 
-    /**
-     * Get the start game listener
-     * @return StartGameListener instance
-     */
     public StartGameListener getStartGameListener() {
         return startGameListener;
     }
 
-    /**
-     * Get the runner friendly fire listener
-     * @return RunnerFriendlyFireListener instance
-     */
     public RunnerFriendlyFireListener getRunnerFriendlyFireListener() {
         return runnerFriendlyFireListener;
     }

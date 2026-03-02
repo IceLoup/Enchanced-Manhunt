@@ -37,9 +37,9 @@ public class CompassEnableListener implements Listener {
 
                 // Send feedback
                 if (compassEnabled) {
-                    player.sendMessage(miniMessage.deserialize(":manhunt: <gradient:#e64935:#e69935>Compass tracking: <#0fd612>ON"));
+                    player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <gray>Compass Tracking: <#0fd612>ON"));
                 } else {
-                    player.sendMessage(miniMessage.deserialize(":manhunt: <gradient:#e64935:#e69935>Compass tracking:<#d60f0f> OFF"));
+                    player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <gray>Compass Tracking:<#d60f0f> OFF"));
                 }
 
                 player.playSound(player.getLocation(), "minecraft:block.note_block.pling", 1.0f, 1.0f);

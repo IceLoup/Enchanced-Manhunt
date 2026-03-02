@@ -27,19 +27,13 @@ public class DeathListener implements Listener {
         this.plugin = plugin;
     }
 
-    /**
-     * Grants the manhunt.runner permission to a player and tracks the attachment
-     * so it can be revoked later. Call this when the game starts.
-     */
     public void grantRunnerPermission(Player player) {
         PermissionAttachment attachment = player.addAttachment(plugin);
         attachment.setPermission("manhunt.runner", true);
         runnerAttachments.put(player.getUniqueId(), attachment);
     }
 
-    /**
-     * Revokes the manhunt.runner permission from a player.
-     */
+
     public void revokeRunnerPermission(Player player) {
         PermissionAttachment attachment = runnerAttachments.remove(player.getUniqueId());
         if (attachment != null) {
@@ -51,16 +45,14 @@ public class DeathListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
 
-        // If hunter dies, do nothing
         if (player.hasPermission("manhunt.hunter")) {
             return;
         }
 
         if (player.hasPermission("manhunt.runner")) {
-            // Revoke the runner permission immediately upon death
+
             revokeRunnerPermission(player);
 
-            // Check if there are other alive runners
             long aliveRunners = Bukkit.getOnlinePlayers().stream()
                     .filter(p -> p.hasPermission("manhunt.runner"))
                     .filter(p -> p.getGameMode() != GameMode.SPECTATOR)
@@ -76,8 +68,6 @@ public class DeathListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
 
-        // The runner permission is already gone at this point, but we still
-        // set spectator mode using the attachment map as the source of truth.
         if (runnerAttachments.containsKey(player.getUniqueId())
                 || !player.hasPermission("manhunt.runner")) {
             Bukkit.getScheduler().runTaskLater(plugin,
@@ -96,9 +86,15 @@ public class DeathListener implements Listener {
                         miniMessage.deserialize("<gray>All runners have been eliminated"),
                         Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(3), Duration.ofMillis(500))
                 );
+
+                String seed = Bukkit.getWorld("world").getSeed() + "";
                 player.showTitle(title);
                 player.playSound(player.getLocation(), "minecraft:ui.toast.challenge_complete", 1.0f, 1.0f);
-                player.sendMessage(miniMessage.deserialize(":manhunt: <gray>Game Duration: <#ffd700>" + elapsedTime));
+                player.sendMessage(miniMessage.deserialize(" "));
+                player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <gray>The hunters team has won the Game !"));
+                player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>»<gray> World seed <dark_gray>»<#e61717>" + seed));
+                player.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>»<gray> Game Duration <dark_gray>»<#e61717>" + elapsedTime));
+                player.sendMessage(miniMessage.deserialize(" "));
             }
         }
     }

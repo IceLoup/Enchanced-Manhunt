@@ -56,7 +56,7 @@ public class SelectionGUI implements Listener {
 
         int slot = 0;
         for (Player target : Bukkit.getOnlinePlayers()) {
-            if (slot >= 54) break;
+            if (slot >= 45) break; // Reserve bottom row for UI
 
             ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) skull.getItemMeta();
@@ -102,6 +102,17 @@ public class SelectionGUI implements Listener {
             menu.setItem(slot++, skull);
         }
 
+        ItemStack filler = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        filler.editMeta(m -> m.displayName(Component.empty()));
+        for (int i = 45; i <= 53; i++) {
+            if (i != 49) menu.setItem(i, filler);
+        }
+
+        ItemStack returnItem = new ItemStack(Material.RED_DYE);
+        returnItem.editMeta(m -> m.displayName(
+                miniMessage.deserialize("<!ITALIC><#FF2D2D>Close the menu")));
+        menu.setItem(49, returnItem);
+
         viewer.openInventory(menu);
     }
 
@@ -117,9 +128,11 @@ public class SelectionGUI implements Listener {
             event.setCancelled(true);
 
             ItemStack clicked = event.getCurrentItem();
-            if (clicked == null || clicked.getType() != Material.DIAMOND_BOOTS) return;
+            if (clicked == null || clicked.getType() == Material.AIR) return;
 
-            Bukkit.getScheduler().runTask(plugin, () -> openMenu(player));
+            if (clicked.getType() == Material.DIAMOND_BOOTS) {
+                Bukkit.getScheduler().runTask(plugin, () -> openMenu(player));
+            }
             return;
         }
 
@@ -128,7 +141,16 @@ public class SelectionGUI implements Listener {
         event.setCancelled(true);
 
         ItemStack clicked = event.getCurrentItem();
-        if (clicked == null || clicked.getType() != Material.PLAYER_HEAD) return;
+        if (clicked == null || clicked.getType() == Material.AIR) return;
+
+        if (clicked.getType() == Material.RED_DYE) {
+            player.playSound(player.getLocation(), "minecraft:ui.button.click", 1.0f, 1.0f);
+            player.closeInventory();
+            return;
+        }
+
+        if (clicked.getType() != Material.PLAYER_HEAD) return;
+
         player.playSound(player.getLocation(), "minecraft:block.note_block.pling", 1.0f, 1.0f);
 
         SkullMeta meta = (SkullMeta) clicked.getItemMeta();

@@ -64,12 +64,12 @@ public class ManhuntGUI implements Listener, CommandExecutor {
                 miniMessage.deserialize(" "),
                 miniMessage.deserialize("<gray>Assign players as runners or hunters")));
 
-        mainMenu.setItem(13, createItem(Material.COMPARATOR,
+        mainMenu.setItem(13, createItem(Material.WRITABLE_BOOK,
                 miniMessage.deserialize("<gradient:#e64935:#e69935>Game Settings"),
                 miniMessage.deserialize(" "),
                 miniMessage.deserialize("<gray>setup the game settings")));
 
-        mainMenu.setItem(15, createItem(Material.EMERALD,
+        mainMenu.setItem(15, createItem(Material.LIME_CANDLE,
                 miniMessage.deserialize("<gradient:#00ff00:#00cc00>Start"),
                 miniMessage.deserialize(" "),
                 miniMessage.deserialize("<dark_gray>» <gray>Click to start the Manhunt")));
@@ -161,7 +161,7 @@ public class ManhuntGUI implements Listener, CommandExecutor {
             ItemStack clicked = event.getCurrentItem();
             if (clicked == null) return;
 
-            else if (clicked.getType() == Material.COMPARATOR) {
+            else if (clicked.getType() == Material.WRITABLE_BOOK) {
                 updateConfigMenuItems(confMenu);
                 player.openInventory(confMenu);
             }
@@ -170,7 +170,7 @@ public class ManhuntGUI implements Listener, CommandExecutor {
         else if (title.contains("Manhunt configuration")) {
             event.setCancelled(true);
             ItemStack clicked = event.getCurrentItem();
-            if (clicked == null || clicked.getType() == Material.GRAY_STAINED_GLASS_PANE) return;
+            if (clicked == null || clicked.getType() == Material.LIGHT_GRAY_STAINED_GLASS_PANE) return;
 
             if (clicked.getType() == Material.RED_DYE) {
                 player.openInventory(mainMenu);
@@ -179,7 +179,7 @@ public class ManhuntGUI implements Listener, CommandExecutor {
                 friendlyFireListener.setFriendlyFireEnabled(false);
                 runnerFriendlyFireListener.setFriendlyFireEnabled(false);
                 compassEnableListener.setCompassEnabled(true);
-                overWorldBorderListener.setWorldBorderSize(10000);
+                overWorldBorderListener.setWorldBorderSize(5000);
                 updateConfigMenuItems(event.getInventory());
                 player.sendMessage(miniMessage.deserialize("<green>Settings Reset!"));
             }

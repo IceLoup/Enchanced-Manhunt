@@ -30,7 +30,6 @@ public class StartGameListener implements Listener {
     private int configValue = 600; // Default 30 seconds
     private final Set<UUID> frozenPlayers = new HashSet<>();
 
-    // Timer fields
     private long gameStartTime;
     private BukkitTask timerTask;
     private boolean isGameActive = false;
@@ -44,10 +43,8 @@ public class StartGameListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
-        // Use PlainText serializer to check titles reliably
         String title = PlainTextComponentSerializer.plainText().serialize(event.getView().title());
 
-        // --- Configuration Menu Logic ---
         if (title.contains("Manhunt configuration")) {
             event.setCancelled(true);
             ItemStack clicked = event.getCurrentItem();
@@ -69,13 +66,12 @@ public class StartGameListener implements Listener {
             }
         }
 
-        // --- Main Menu Logic ---
         else if (title.contains("Manhunt Menu")) {
             event.setCancelled(true);
             ItemStack clicked = event.getCurrentItem();
             if (clicked == null || clicked.getType() == Material.AIR) return;
 
-            if (clicked.getType() == Material.EMERALD) {
+            if (clicked.getType() == Material.LIME_CANDLE) {
                 player.closeInventory();
                 startGame(player);
             }
@@ -89,6 +85,7 @@ public class StartGameListener implements Listener {
             return;
         }
 
+
         ItemStack compass = new ItemStack(Material.COMPASS);
         compass.editMeta(meta -> {
 
@@ -101,6 +98,7 @@ public class StartGameListener implements Listener {
         });
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            onlinePlayer.getInventory().clear();
             if (onlinePlayer.hasPermission("manhunt.hunter")) {
                 onlinePlayer.getInventory().addItem(compass);
             }
@@ -113,15 +111,19 @@ public class StartGameListener implements Listener {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             onlinePlayer.teleport(spawnLocation);
 
-            // Modern health reset (setHealth to maxAttribute)
             double maxHealth = onlinePlayer.getAttribute(Attribute.MAX_HEALTH).getValue();
             onlinePlayer.setHealth(maxHealth);
             onlinePlayer.setFoodLevel(20);
-            onlinePlayer.setSaturation(14.0f);
+            onlinePlayer.setSaturation(12.5f);
 
             onlinePlayer.playSound(onlinePlayer.getLocation(), "minecraft:entity.player.levelup", 1.0f, 1.0f);
 
-            // Logic for Hunters
+            if (!onlinePlayer.hasPermission("manhunt.hunter") && !onlinePlayer.hasPermission("manhunt.runner")) {
+                Bukkit.getScheduler().runTaskLater(plugin,
+                        () -> onlinePlayer.setGameMode(GameMode.SPECTATOR), 1L);
+                onlinePlayer.sendMessage(miniMessage.deserialize("<gray>You are spectating the game!"));
+            }
+
             if (onlinePlayer.hasPermission("manhunt.hunter")) {
                 if (configValue == 0) {
                     return;
@@ -132,7 +134,6 @@ public class StartGameListener implements Listener {
             }
         }
 
-        // Start the game timer
         startTimer();
         if (configValue >= 0) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -169,11 +170,9 @@ public class StartGameListener implements Listener {
     }
 
     private void startTimer() {
-        // Record the start time
         gameStartTime = System.currentTimeMillis();
         isGameActive = true;
 
-        // Create a repeating task that updates every second (20 ticks)
         timerTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             if (!isGameActive) {
                 return;
@@ -182,7 +181,6 @@ public class StartGameListener implements Listener {
             long elapsedMillis = System.currentTimeMillis() - gameStartTime;
             String timeString = formatTime(elapsedMillis);
 
-            // Send action bar to all players
             Component timerDisplay = miniMessage.deserialize("<gray>" + timeString);
             for (Player player : Bukkit.getOnlinePlayers()) {
                 player.sendActionBar(timerDisplay);
@@ -220,7 +218,6 @@ public class StartGameListener implements Listener {
         if (frozenPlayers.contains(event.getPlayer().getUniqueId())) {
             Location from = event.getFrom();
             Location to = event.getTo();
-            // Block X, Y, Z movement but allow looking around
             if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
                 event.setTo(from.setDirection(to.getDirection()));
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {

@@ -74,10 +74,8 @@ public class CompassListener implements Listener {
         Action action = event.getAction();
 
         if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-            // Logic: Switch to the next runner
             switchTarget(hunter, runners);
         } else if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-            // Logic: Just update the position of the current target
             updateCompass(hunter);
         }
     }
@@ -89,7 +87,6 @@ public class CompassListener implements Listener {
         if (currentTargetId == null) {
             nextRunner = runners.get(0);
         } else {
-            // Find the index of the current target and get the next one in the list
             int currentIndex = -1;
             for (int i = 0; i < runners.size(); i++) {
                 if (runners.get(i).getUniqueId().equals(currentTargetId)) {
@@ -97,7 +94,6 @@ public class CompassListener implements Listener {
                     break;
                 }
             }
-            // Cycle back to 0 if at the end of the list
             int nextIndex = (currentIndex + 1) % runners.size();
             nextRunner = runners.get(nextIndex);
         }
@@ -110,7 +106,6 @@ public class CompassListener implements Listener {
     private void updateCompass(Player hunter) {
         UUID targetId = hunterTargets.get(hunter.getUniqueId());
 
-        // If no target selected yet, try to pick the first available runner
         if (targetId == null) {
             List<Player> runners = getAllRunners();
             if (runners.isEmpty()) return;
@@ -131,7 +126,6 @@ public class CompassListener implements Listener {
             hunter.setCompassTarget(runnerLoc);
             hunter.sendMessage(miniMessage.deserialize("<#e61717>⚔ <dark_gray>» <gray>Updated position of <#e61717>" + runner.getName()));
         } else {
-            // Cross-dimensional tracking
             Location lastLoc = lastKnownLocations.getOrDefault(targetId, new HashMap<>()).get(hunterWorld.getName());
 
             if (lastLoc != null) {
