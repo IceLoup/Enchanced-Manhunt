@@ -22,6 +22,7 @@ Full GUI configuration is possible via
 
 Full Ingame Configuration
 
+Main version is 1.21.X for Paper and purpur !
 
 Try it out now on modrinth https://modrinth.com/plugin/enchanced-manhunt
 
